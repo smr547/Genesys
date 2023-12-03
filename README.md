@@ -1,5 +1,6 @@
 # Genesys
-Code generate RESTful Hypertext-driven CRUD applications. This project was inspired by the book [Hypermedia Systems](https://hypermedia.systems/) and the authors works on [htmx](https://htmx.org/)
+Code generate RESTful Hypertext-driven CRUD applications. This project was inspired by the book [Hypermedia Systems](https://hypermedia.systems/) 
+by Gross, Stepinski and Aksimsekand their work on [htmx](https://htmx.org/) and related technology.
 
 ## Initial Goal
 Employ code generation techniques to build a simple [Hypermedia-Driven-Application](https://htmx.org/essays/hypermedia-driven-applications/) similiar to the 
