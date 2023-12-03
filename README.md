@@ -12,7 +12,7 @@ The initial application will use code generation techniques to develop component
 * **V**iew components (HTML hypertext) code Generate from BeanSpecs
 * **C**ontroler components (server-based application code) also code-generated from BeanSpecs
 
-It is hoped that this initial work will lead to the discovery of useful patterns to be applied in future, more ambitious code-generated applications
+It is hoped that this initial work will lead to the discovery of useful [patterns](./docs/patterns) to be applied in future, more ambitious code-generated applications
 
 ## Software stack 
 
