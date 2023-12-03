@@ -1,22 +1,6 @@
 [
   {
-    "id": 2,
-    "first": "Steven",
-    "last": "Ring",
-    "phone": "+6147495268",
-    "email": "smr@soutshsky.com.au",
-    "errors": {}
-  },
-  {
-    "id": 3,
-    "first": "Steven",
-    "last": "Ring",
-    "phone": "+6147495268",
-    "email": "smr@soutshsky.com.au",
-    "errors": {}
-  },
-  {
-    "id": 4,
+    "id": 1,
     "first": "Steven",
     "last": "Ring",
     "phone": "+6147495268",

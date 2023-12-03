@@ -12,4 +12,5 @@ if __name__ == "__main__":
 
     Contact.load_db()
     c = Contact(None, "Steven", "Ring", "+6147495268", "smr@soutshsky.com.au")
-    c.save()
+    if not c.save():
+        print("Errors: ", c.errors)

@@ -16,11 +16,12 @@ class FieldType(str, Enum):
 
 class FieldSpec:
 
-    def __init__(self, name=None, type=None, notNull=False, unique=False):
+    def __init__(self, name=None, type=None, notNull=False, unique=False, autoId=False):
         self.name = name
         self.type = type
         self.notNull = notNull
         self.unique = unique
+        self.autoId = autoId
 
     def __str__(self):
         return json.dumps(self.__dict__, ensure_ascii=False)
@@ -53,10 +54,10 @@ class BeanSpec:
 if __name__ == "__main__":
 
     fieldlist = [ \
-        FieldSpec("id", FieldType.INT, True, True), \
+        FieldSpec("id", FieldType.INT, True, True, True), \
         FieldSpec("first", FieldType.STRING, True, False), \
         FieldSpec("last", FieldType.STRING, True, False), \
-        FieldSpec("phone", FieldType.STRING, True, False), \
+        FieldSpec("phone", FieldType.STRING, True, True), \
         FieldSpec("email", FieldType.EMAIL, True, True) \
         ]
 

@@ -43,14 +43,20 @@ class Contact:
             return False    # refuse to save if invalid
 
         # auto ID generation -- currently mandatory for all Beans
+  
 
         if self.id is None:
             if len(Contact.db) == 0:
-                max_id = 1
+                max_id = 0
             else:
                 max_id = max(instance.id for instance in Contact.db.values())
             self.id = max_id + 1
             Contact.db[self.id] = self
+  
+  
+  
+  
+  
         Contact.save_db()           # commit database to permanent store
         return True                    # indicate successful save
 
@@ -97,4 +103,41 @@ class Contact:
         return c
 
     def validate(self):
-        return True
+    
+        # Non null constraints
+  
+  
+        if not self.first:
+            self.errors['first'] = "first Required"
+  
+  
+        if not self.last:
+            self.errors['last'] = "last Required"
+  
+  
+        if not self.phone:
+            self.errors['phone'] = "phone Required"
+  
+  
+        if not self.email:
+            self.errors['email'] = "email Required"
+  
+
+         # Unique constraints
+  
+  
+  
+  
+        existing_phone = next(filter(lambda c: c.phone == self.phone, Contact.db.values()), None)
+        if existing_phone:
+            self.errors['phone'] = "phone Must Be Unique"
+  
+  
+        existing_email = next(filter(lambda c: c.email == self.email, Contact.db.values()), None)
+        if existing_email:
+            self.errors['email'] = "email Must Be Unique"
+  
+
+
+         
+        return len(self.errors) == 0

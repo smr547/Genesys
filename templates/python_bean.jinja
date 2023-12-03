@@ -39,14 +39,18 @@ class {{ name }}:
             return False    # refuse to save if invalid
 
         # auto ID generation -- currently mandatory for all Beans
+{%- for field in fields %}
+  {% if field.autoId %}
 
-        if self.id is None:
+        if self.{{ field.name }} is None:
             if len({{ name }}.db) == 0:
-                max_id = 1
+                max_id = 0
             else:
                 max_id = max(instance.id for instance in {{ name }}.db.values())
             self.id = max_id + 1
-            {{ name }}.db[self.id] = self
+            {{ name }}.db[self.{{ field.name }}] = self
+  {% endif %}
+{%- endfor %}
         {{ name }}.save_db()           # commit database to permanent store
         return True                    # indicate successful save
 
@@ -93,4 +97,26 @@ class {{ name }}:
         return c
 
     def validate(self):
-        return True
+    
+        # Non null constraints
+
+{%- for field in fields %}
+  {% if field.notNull and not field.autoId %}
+        if not self.{{ field.name }}:
+            self.errors['{{ field.name }}'] = "{{ field.name }} Required"
+  {% endif %}
+{%- endfor %}
+
+         # Unique constraints
+
+{%- for field in fields %}
+  {% if field.unique and not field.autoId %}
+        existing_{{ field.name }} = next(filter(lambda c: c.{{ field.name }} == self.{{ field.name }}, {{ name }}.db.values()), None)
+        if existing_{{ field.name }}:
+            self.errors['{{ field.name }}'] = "{{ field.name }} Must Be Unique"
+  {% endif %}
+{%- endfor %}
+
+
+         
+        return len(self.errors) == 0
