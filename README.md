@@ -44,3 +44,14 @@ work of others or hang up our boots.
 ## Project status
 
 Initial stages, fully expecting to [fail fast](https://www.techtarget.com/whatis/definition/fail-fast#:~:text=An%20important%20goal%20of%20the%20fail%20fast%20philosophy%20is%20to,test%20early%20or%20fail%20cheaply.)
+
+## Quickstart
+
+To explore current capability 
+
+```
+cd src
+./testContactBeanSpec.py
+```
+
+The output code is a Python Entitly Bean (if there are such things). 

@@ -1,6 +1,20 @@
 #!/usr/bin/env python3
 #
-# Specification of for a Bean class
+# Specification of a Bean class
+# 
+# An Entity Bean is a class which represents a single Entity in an objedt Model. These are 
+# key element in the "M" part of MVC
+#
+# Instances of this class are inputs to the code generation process.
+#
+# At present this is a very simple Bean class implementing very few properties. It is hope
+# that the BeanSpecification class will evolve to support a full object-relational model.
+# 
+# Current capabilities:
+#
+# 1. Named entity
+# 2. List of properties (fields)
+# 3. Each field has name, type and boolean states (nullable, unique, autoId, searchable) 
 #
 #------------------------------------
 
@@ -49,20 +63,3 @@ class BeanSpec:
         TEMPLATE_FILE = "python_bean.jinja"
         template = templateEnv.get_template( TEMPLATE_FILE )
         return template.render( self.__dict__ )
-        
-
-
-if __name__ == "__main__":
-
-    fieldlist = [ \
-        FieldSpec("id", FieldType.INT, True, True, True), \
-        FieldSpec("first", FieldType.STRING, True, False), \
-        FieldSpec("last", FieldType.STRING, True, False), \
-        FieldSpec("phone", FieldType.STRING, True, True), \
-        FieldSpec("email", FieldType.EMAIL, True, True) \
-        ]
-
-    bs = BeanSpec("Contact", fieldlist)
-#    print(bs)
-    print(bs.generate())
-
