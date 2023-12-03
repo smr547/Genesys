@@ -1,0 +1,96 @@
+import json
+from operator import attrgetter
+import time
+from threading import Thread
+from random import random
+
+
+# ========================================================
+# Contact Model
+# ========================================================
+PAGE_SIZE = 100
+
+class {{ name }}:
+    # mock contacts database
+    db = {}
+    
+    # Constructor
+
+    def __init__(self {%- for field in fields %}, {{ field.name }}=None{%- endfor %}):
+{%- for field in fields %}
+        self.{{ field.name }} = {{ field.name }}
+{%- endfor %}
+        self.errors = {}
+
+    def __str__(self):
+        return json.dumps(self.__dict__, ensure_ascii=False)
+
+    # Update
+
+    def update(self {%- for field in fields %}, {{ field.name }}{%- endfor %}):
+{%- for field in fields %}
+        self.{{ field.name }} = {{ field.name }}
+{%- endfor %}
+
+    def save(self):
+        # perform validation
+
+        if not self.validate():
+            return False    # refuse to save if invalid
+
+        # auto ID generation -- currently mandatory for all Beans
+
+        if self.id is None:
+            if len({{ name }}.db) == 0:
+                max_id = 1
+            else:
+                max_id = max(instance.id for instance in {{ name }}.db.values())
+            self.id = max_id + 1
+            {{ name }}.db[self.id] = self
+        {{ name }}.save_db()           # commit database to permanent store
+        return True                    # indicate successful save
+
+    # delete a {{ name }}
+    def delete(self):
+        del {{ name }}.db[self.id]     # remove from in memory database
+        {{ name }}.save_db()           # commit database to permanent store
+
+    
+    @classmethod
+    def count(cls):
+        time.sleep(2)
+        return len(cls.db)
+
+    @classmethod
+    def all(cls, page=1):
+        page = int(page)
+        start = (page - 1) * PAGE_SIZE
+        end = start + PAGE_SIZE
+        return list(cls.db.values())[start:end]
+
+    @classmethod
+    def load_db(cls):
+        with open('{{ name.lower() }}.json', 'r') as {{ name.lower() }}_file:
+            {{ name.lower() }}s = json.load({{ name.lower() }}_file)
+            cls.db.clear()
+            for object in {{ name.lower() }}s:
+                {{ name.lower()[0:1] }} = {{ name }}({%- for field in fields %}object['{{ field.name }}']{% if not loop.last %}, {% endif %}{%- endfor %})
+                cls.db[{{ name.lower()[0:1] }}.{{ fields[0].name }}] = {{ name.lower()[0:1] }}
+
+    @staticmethod
+    def save_db():
+        out_arr = [instance.__dict__ for instance in {{ name }}.db.values()]
+        with open("{{ name.lower() }}.json", "w") as f:
+            json.dump(out_arr, f, indent=2)
+
+    @classmethod
+    def find(cls, id_):
+        id_ = int(id_)
+        c = cls.db.get(id_)
+        if c is not None:
+            c.errors = {}
+
+        return c
+
+    def validate(self):
+        return True
