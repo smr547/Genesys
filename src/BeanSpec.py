@@ -16,12 +16,13 @@ class FieldType(str, Enum):
 
 class FieldSpec:
 
-    def __init__(self, name=None, type=None, notNull=False, unique=False, autoId=False):
+    def __init__(self, name=None, type=None, notNull=False, unique=False, autoId=False, searchable=True):
         self.name = name
         self.type = type
         self.notNull = notNull
         self.unique = unique
         self.autoId = autoId
+        self.searchable = searchable
 
     def __str__(self):
         return json.dumps(self.__dict__, ensure_ascii=False)

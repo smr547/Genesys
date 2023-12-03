@@ -101,22 +101,40 @@ class {{ name }}:
         # Non null constraints
 
 {%- for field in fields %}
-  {% if field.notNull and not field.autoId %}
+  {%- if field.notNull and not field.autoId %}
         if not self.{{ field.name }}:
             self.errors['{{ field.name }}'] = "{{ field.name }} Required"
-  {% endif %}
+  {%- endif %}
 {%- endfor %}
 
-         # Unique constraints
+        # Unique constraints
 
 {%- for field in fields %}
-  {% if field.unique and not field.autoId %}
+  {%- if field.unique and not field.autoId %}
         existing_{{ field.name }} = next(filter(lambda c: c.{{ field.name }} == self.{{ field.name }}, {{ name }}.db.values()), None)
         if existing_{{ field.name }}:
             self.errors['{{ field.name }}'] = "{{ field.name }} Must Be Unique"
-  {% endif %}
+  {%- endif %}
 {%- endfor %}
 
 
          
         return len(self.errors) == 0
+
+    # Search
+
+    @classmethod
+    def search(cls, text):
+        result = []
+        for instance in cls.db.values():
+{%- for field in fields %}
+  {%- if field.searchable and not field.autoId %}
+            match_{{ field.name }} = instance.{{ field.name }} is not None and text in instance.{{ field.name }}
+  {%- endif %}
+{%- endfor %}
+            if{%- for field in fields %}{% if field.searchable and not field.autoId  %} match_{{ field.name }}{% if not loop.last %} or {% endif %}{% endif %}{%- endfor %}: 
+                result.append(c)
+        return result
+
+    
+

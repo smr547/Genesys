@@ -105,39 +105,40 @@ class Contact:
     def validate(self):
     
         # Non null constraints
-  
-  
         if not self.first:
             self.errors['first'] = "first Required"
-  
-  
         if not self.last:
             self.errors['last'] = "last Required"
-  
-  
         if not self.phone:
             self.errors['phone'] = "phone Required"
-  
-  
         if not self.email:
             self.errors['email'] = "email Required"
-  
 
-         # Unique constraints
-  
-  
-  
-  
+        # Unique constraints
         existing_phone = next(filter(lambda c: c.phone == self.phone, Contact.db.values()), None)
         if existing_phone:
             self.errors['phone'] = "phone Must Be Unique"
-  
-  
         existing_email = next(filter(lambda c: c.email == self.email, Contact.db.values()), None)
         if existing_email:
             self.errors['email'] = "email Must Be Unique"
-  
 
 
          
         return len(self.errors) == 0
+
+    # Search
+
+    @classmethod
+    def search(cls, text):
+        result = []
+        for instance in cls.db.values():
+            match_first = instance.first is not None and text in instance.first
+            match_last = instance.last is not None and text in instance.last
+            match_phone = instance.phone is not None and text in instance.phone
+            match_email = instance.email is not None and text in instance.email
+            if match_first or  match_last or  match_phone or  match_email: 
+                result.append(c)
+        return result
+
+    
+
