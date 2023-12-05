@@ -1,0 +1,162 @@
+from flask import (
+    Flask, redirect, render_template, request, flash, jsonify, send_file
+)
+from {{ name.lower() }}s_model import {{ name }}
+import time
+
+# =======================================================
+# Load the Model data
+# =======================================================
+
+{{ name }}.load_db()
+
+# ========================================================
+# Flask App
+# ========================================================
+
+app = Flask(__name__)
+
+app.secret_key = b'hypermedia rocks'
+
+# ========================================================
+# Top level Redirect root to /{{ name.lower() }}s
+# ========================================================
+
+@app.route("/")
+def index():
+    return redirect("/{{ name.lower() }}s")
+
+
+@app.route("/{{ name.lower() }}s")
+def {{ name.lower() }}s():
+    search = request.args.get("q")
+    page = int(request.args.get("page", 1))
+    if search is not None:
+        {{ name.lower() }}s_set = {{ name }}.search(search)
+        if request.headers.get('HX-Trigger') == 'search':
+            return render_template("rows.html", {{ name.lower() }}s={{ name.lower() }}s_set)
+    else:
+        {{ name.lower() }}s_set = {{ name }}.all()
+    return render_template("index.html", {{ name.lower }}s={{ name.lower() }}s_set, archiver=Archiver.get())
+
+
+@app.route("/{{ name.lower() }}s/count")
+def contacts_count():
+    count = {{ name }}.count()
+    return "(" + str(count) + " total {{ name }}s)"
+
+
+@app.route("/{{ name.lower() }}s/new", methods=['GET'])
+def contacts_new_get():
+    return render_template("new.html", contact={{ name }}())
+
+
+@app.route("/{{ name.lower() }}s/new", methods=['POST'])
+def contacts_new():
+    c = {{ name }}(None, request.form['first_name'], request.form['last_name'], request.form['phone'],
+                request.form['email'])
+    if c.save():
+        flash("Created New {{ name }}!")
+        return redirect("/{{ name.lower }}s")
+    else:
+        return render_template("new.html", contact=c)
+
+
+@app.route("/{{ name.lower() }}s/<contact_id>")
+def contacts_view(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    return render_template("show.html", contact=contact)
+
+
+@app.route("/{{ name.lower() }}s/<contact_id>/edit", methods=["GET"])
+def contacts_edit_get(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    return render_template("edit.html", contact=contact)
+
+
+@app.route("/{{ name.lower() }}s/<contact_id>/edit", methods=["POST"])
+def contacts_edit_post(contact_id=0):
+    c = {{ name }}.find(contact_id)
+    c.update(request.form['first_name'], request.form['last_name'], request.form['phone'], request.form['email'])
+    if c.save():
+        flash("Updated {{ name }}!")
+        return redirect("/{{ name.lower() }}s/" + str(contact_id))
+    else:
+        return render_template("edit.html", contact=c)
+
+
+@app.route("/{{ name.lower() }}s/<contact_id>/email", methods=["GET"])
+def contacts_email_get(contact_id=0):
+    c = {{ name }}.find(contact_id)
+    c.email = request.args.get('email')
+    c.validate()
+    return c.errors.get('email') or ""
+
+
+@app.route("/{{ name.lower() }}s/<contact_id>", methods=["DELETE"])
+def contacts_delete(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    {{ name }}.delete()
+    if request.headers.get('HX-Trigger') == 'delete-btn':
+        flash("Deleted {{ name }}!")
+        return redirect("/contacts", 303)
+    else:
+        return ""
+
+
+@app.route("/{{ name.lower() }}s/", methods=["DELETE"])
+def contacts_delete_all():
+    contact_ids = list(map(int, request.form.getlist("selected_contact_ids")))
+    for contact_id in contact_ids:
+        contact = {{ name }}.find(contact_id)
+        contact.delete()
+    flash("Deleted {{ name }}!")
+    {{ name.lower() }}s_set = {{ name }}.all(1)
+    return render_template("index.html", contacts={{ name.lower() }}s_set)
+
+
+# ===========================================================
+# JSON Data API
+# ===========================================================
+
+@app.route("/api/v1/contacts", methods=["GET"])
+def json_contacts():
+    {{ name.lower() }}s_set = {{ name }}.all()
+    return {"{{ name.lower() }}s": [c.__dict__ for c in {{ name.lower() }}s_set]}
+
+
+@app.route("/api/v1/contacts", methods=["POST"])
+def json_contacts_new():
+    c = {{ name }}(None, request.form.get('first_name'), request.form.get('last_name'), request.form.get('phone'),
+                request.form.get('email'))
+    if c.save():
+        return c.__dict__
+    else:
+        return {"errors": c.errors}, 400
+
+
+@app.route("/api/v1/{{ name.lower() }}s/<contact_id>", methods=["GET"])
+def json_contacts_view(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    return contact.__dict__
+
+
+@app.route("/api/v1/{{ name.lower() }}s/<contact_id>", methods=["PUT"])
+def json_contacts_edit(contact_id):
+    c = {{ name }}.find(contact_id)
+    c.update(request.form['first_name'], request.form['last_name'], request.form['phone'], request.form['email'])
+    if c.save():
+        return c.__dict__
+    else:
+        return {"errors": c.errors}, 400
+
+
+@app.route("/api/v1/{{ name.lower() }}s/<contact_id>", methods=["DELETE"])
+def json_contacts_delete(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    contact.delete()
+    return jsonify({"success": True})
+
+
+if __name__ == "__main__":
+    app.run()
