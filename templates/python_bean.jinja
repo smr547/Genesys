@@ -1,3 +1,13 @@
+#------------------------------------------------------
+# W A R N I N G
+# =============
+#
+# This file has been automatically generated 
+# DO NOT modifiy this file -- all modifications 
+# will be LOST
+#------------------------------------------------------
+
+
 import json
 from operator import attrgetter
 import time
@@ -11,7 +21,7 @@ from random import random
 PAGE_SIZE = 100
 
 class {{ name }}:
-    # mock contacts database
+    # mock {{ name }} database
     db = {}
     
     # Constructor
@@ -120,7 +130,7 @@ class {{ name }}:
 
          
         return len(self.errors) == 0
-
+{%- if isSearchable %}
     # Search
 
     @classmethod
@@ -133,8 +143,10 @@ class {{ name }}:
   {%- endif %}
 {%- endfor %}
             if{%- for field in fields %}{% if field.searchable and not field.autoId  %} match_{{ field.name }}{% if not loop.last %} or {% endif %}{% endif %}{%- endfor %}: 
-                result.append(c)
+                result.append(instance)
         return result
+
+{%- endif %}
 
     
 

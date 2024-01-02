@@ -26,6 +26,7 @@ class FieldType(str, Enum):
     INT: str = "int"
     STRING: str = "string"
     FLOAT: str = "float"
+    BOOLEAN: str = "boolean"
     EMAIL: str = "email"
 
 class FieldSpec:
@@ -68,10 +69,31 @@ class BeanSpec:
     def nameTempVar(self):
         return self.lowerName[0:1]
 
+    def isSearchable(self):
+        return True
+
 
     def generate(self):
         templateLoader = jinja2.FileSystemLoader( searchpath="../templates" )
         templateEnv = jinja2.Environment( loader=templateLoader )
         TEMPLATE_FILE = "python_bean.jinja"
         template = templateEnv.get_template( TEMPLATE_FILE )
-        return template.render( self.__dict__ )
+        with open(self.name + ".py", "w") as outfile:
+
+            # generate derived values used in template
+
+            derived_values = {}
+
+            searchableFields = 0
+            for fs in self.fields:
+                if fs.searchable and not fs.autoId:
+                    searchableFields += 1
+            derived_values["isSearchable"] = searchableFields > 0
+
+            # create the template context
+            ctx = {}
+            ctx.update(self.__dict__)
+            ctx.update(derived_values)
+      
+            # generate the code using the template
+            outfile.write(template.render(ctx))
