@@ -43,7 +43,7 @@ The [Contacts App](https://github.com/bigskysoftware/contact-app/tree/master) de
 <tr>
   <td>/contacts/count</td>
   <td>GET</td>
-  <td></td>
+  <td>Returns a count of the number of Contacts</td>
 </tr>
 <tr>
   <td>/contacts/new</td>
@@ -77,31 +77,31 @@ The [Contacts App](https://github.com/bigskysoftware/contact-app/tree/master) de
 </tr>
   <td>/contacts</td>
   <td>DELETE</td>
-  <td>?</td>
+  <td>Delete selected Contacts</td>
 </tr>
 <tr>
   <td>/api/v1/contacts</td>
   <td>GET</td>
-  <td>?</td>
+  <td>Return all Contacts as a JSON array</td>
 </tr>
 <tr>
   <td>/api/v1/contacts</td>
   <td>POST</td>
-  <td>?</td>
+  <td>Create a new contact</td>
 </tr>
 <tr>
   <td>/api/v1/contacts/&lt;contact_id&gt;</td>
   <td>GET</td>
-  <td>?</td>
+  <td>Return a JSON representation of the specified Contact</td>
 </tr>
 <tr>
   <td>/api/v1/contacts/&lt;contact_id&gt;</td>
-  <td>POST</td>
-  <td>?</td>
+  <td>PUT</td>
+  <td>Amend the specified Contact</td>
 </tr>
 <tr>
   <td>/api/v1/contacts/&lt;contact_id&gt;</td>
   <td>DELETE</td>
-  <td>?</td>
+  <td>Delete the specified Contact</td>
 </tr>
 </table>
