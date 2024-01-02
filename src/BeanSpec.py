@@ -46,9 +46,21 @@ class BeanSpec:
     def __init__(self, name=None, fields = []):
         self.name = name
         self.fields = fields
+        self.relations = set(())
+
+    def _addRelation(self, relation):
+        self.relations.add(relation)
 
     def __str__(self):
-        return json.dumps(self.__dict__, ensure_ascii=False, default=vars)
+        # return json.dumps(self.__dict__, ensure_ascii=False, default=vars)
+        s =  "{name: \"" + self.name + "\", fields: ["
+        for f in self.fields:
+            s += f.__str__()
+        s += "], relations: {"
+        for r in self.relations:
+            s += r.id + ", "
+        s += "]}"
+        return s
     
     def lowerName(self):
         return lower(self.name)
