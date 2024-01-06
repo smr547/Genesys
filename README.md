@@ -52,7 +52,9 @@ To explore current capability
 
 ```
 cd src
-./testContactBeanSpec.py
+./generate_BoatLayout_app.py
+flask routes
+flask run
 ```
 
 The output code is a Python Entitly Bean (if there are such things). 
