@@ -5,6 +5,7 @@ import json
 from Space import * 
 from Region import * 
 from AccessType import * 
+from Access import *
 from R1 import * 
 from R2 import * 
 from R3 import * 
@@ -77,7 +78,8 @@ if __name__ == "__main__":
 
     passerelle = AccessType.search("Passerelle")[0] 
 
-    passerelleAccess = R1(None, shore.id, swimDeck.id, passable=True)
+    # passerelleAccess = R1(None, shore.id, swimDeck.id, passable=True)
+    passerelleAccess = Access(None, shore.id, swimDeck.id, passable=True)
     if not passerelleAccess.save():
         print("Errors: ", passerelleAccess.errors)
 

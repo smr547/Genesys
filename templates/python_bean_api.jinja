@@ -1,0 +1,50 @@
+
+
+# ===========================================================
+# JSON Data API for CRUD operations on {{ name.lower() }}s
+# ===========================================================
+
+# Return list of all {{ name.lower() }}s
+
+@app.route("/api/v1/{{ name.lower() }}s", methods=["GET"])
+def json_{{ name.lower() }}s():
+    {{ name.lower() }}s_set = {{ name }}.all()
+    return {"{{ name.lower() }}s": [v.__dict__ for v in {{ name.lower() }}s_set]}
+
+# Create a new {{ name }}
+
+@app.route("/api/v1/{{ name.lower() }}s", methods=["POST"])
+def json_{{ name.lower() }}s_new():
+    v = {{ name }}(None, request.form.get('first_name'), request.form.get('last_name'), request.form.get('phone'),
+                request.form.get('email'))
+    if c.save():
+        return c.__dict__
+    else:
+        return {"errors": c.errors}, 400
+
+
+@app.route("/api/v1/{{ name.lower() }}s/<contact_id>", methods=["GET"])
+def json_contacts_view(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    return contact.__dict__
+
+
+@app.route("/api/v1/{{ name.lower() }}s/<contact_id>", methods=["PUT"])
+def json_contacts_edit(contact_id):
+    c = {{ name }}.find(contact_id)
+    c.update(request.form['first_name'], request.form['last_name'], request.form['phone'], request.form['email'])
+    if c.save():
+        return c.__dict__
+    else:
+        return {"errors": c.errors}, 400
+
+
+@app.route("/api/v1/{{ name.lower() }}s/<contact_id>", methods=["DELETE"])
+def json_contacts_delete(contact_id=0):
+    contact = {{ name }}.find(contact_id)
+    contact.delete()
+    return jsonify({"success": True})
+
+
+if __name__ == "__main__":
+    app.run()
