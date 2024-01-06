@@ -1,12 +1,29 @@
 #!/usr/bin/env python3
 #
-# Generate Python code BoatLayout entity Bean
+# Generate Python code BoatLayout entity Beans
+#
+# This script capture the Class Diagram information for the BoatLayout Domain. This 
+# includes:
+#
+#     Main classes
+#     Relationships 
+#     Association classes
+#  
+# Python code is then generated for each class. An association class is
+# then generated to implement each relationship -- regardless of whether the
+# relationship is expressed as an Association Class or not
 #----------------------------------------
+
+from Domain import Domain
 from BeanSpec import *
 from RelationSpec import AssociationBean, RelationshipEnd, Relationship
 
 
 if __name__ == "__main__":
+
+#-----------------------------------------------------------------
+#  Capture Class diagram information
+#-----------------------------------------------------------------
 
 # Region 
 
@@ -64,13 +81,17 @@ if __name__ == "__main__":
     r3 = Relationship("R3", end0, end1, None) 
 
 
+#-----------------------------------------------------------------
+#  End of Class diagram information
+#-----------------------------------------------------------------
 
-# Generate code
 
-    for bean in [regionBean, accessTypeBean, spaceBean]:
-        print(bean)
-        bean.generate()
+# Generate bean code
 
-    for relationship in [r1, r2, r3]:
-        print(relationship)
-        relationship.generate()
+    domain = Domain(name="Boat Layout Domain", \
+            classes=[regionBean, accessTypeBean, spaceBean], \
+            relationships=[r1, r2, r3])
+
+    print(domain)
+    domain.generateCode()
+
