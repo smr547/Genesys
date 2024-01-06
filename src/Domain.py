@@ -29,7 +29,7 @@ class Domain(object):
         templateEnv = jinja2.Environment( loader=templateLoader )
         TEMPLATE_FILE = "app_py.jinja"
         template = templateEnv.get_template( TEMPLATE_FILE )
-        with open("app.py", "w") as outfile:
+        with open("./generated/app.py", "w") as outfile:
 
             # generate derived values used in template
 

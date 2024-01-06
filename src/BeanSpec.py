@@ -78,7 +78,7 @@ class BeanSpec:
         templateEnv = jinja2.Environment( loader=templateLoader )
         TEMPLATE_FILE = "python_bean.jinja"
         template = templateEnv.get_template( TEMPLATE_FILE )
-        with open(self.name + ".py", "w") as outfile:
+        with open("./generated/" + self.name + ".py", "w") as outfile:
 
             # generate derived values used in template
 
