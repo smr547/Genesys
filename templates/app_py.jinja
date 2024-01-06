@@ -1,0 +1,67 @@
+# Generated code for application {{ name }}
+from flask import (
+    Flask, redirect, render_template, request, flash, jsonify, send_file
+)
+
+# import the class model (domain classes and relationships
+{%- for cls in classes %}
+from {{ cls.name }} import {{ cls.name }}
+{%- endfor %}
+{%- for r in relationships %}
+from {{ r.id }} import {{ r.id }}
+{%- endfor %}
+
+import time
+
+# load all domain class instance databases
+{%- for cls in classes %}
+{{ cls.name }}.load_db()
+{%- endfor %}
+{%- for r in relationships %}
+{{ r.id }}.load_db()
+{%- endfor %}
+
+# ========================================================
+# Flask App
+# ========================================================
+
+app = Flask(__name__)
+
+app.secret_key = b'hypermedia rocks'
+
+
+@app.route("/")
+def index():
+    return redirect("/contacts")
+
+
+# ===========================================================
+# JSON Data API for domain classes
+# ===========================================================
+
+{%- for cls in classes %}
+# get all {{ cls.name }}s
+@app.route("/api/v1/{{ cls.name.lower() }}s", methods=["GET"])
+def json_get_all_{{ cls.name }}s():
+    instance_set = {{ cls.name }}.all()
+    return {"{{ cls.name.lower() }}s": [inst.__dict__ for inst in instance_set]}
+
+{%- endfor %}
+
+# ===========================================================
+# JSON Data API for domain relationships
+# ===========================================================
+
+{%- for r in relationships %}
+# get all {{ r.name }}s
+@app.route("/api/v1/{{ r.id.lower() }}s", methods=["GET"])
+def json_get_all_{{ r.id }}s():
+    instance_set = {{ r.id }}.all()
+    return {"{{ r.id.lower() }}s": [inst.__dict__ for inst in instance_set]}
+
+{%- endfor %}
+
+
+
+if __name__ == "__main__":
+    app.run()
